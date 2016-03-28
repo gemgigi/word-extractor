@@ -13,10 +13,20 @@ import java.util.Set;
 public class Extractor {
 
 
-    public static final int WORD_MAX_NUMBER = 30000;
+    public static final int WORD_MAX_NUMBER = 40000;
     private int[] position = new int[WORD_MAX_NUMBER * 2];
     private List<String> wordList = new ArrayList<>();
     private List<String> phraseList = new ArrayList<>();
+    private static Extractor extractor;
+    private String lastText = "";
+
+
+    public static Extractor getInstance() {
+        if (extractor == null) {
+            extractor = new Extractor();
+        }
+        return extractor;
+    }
 
     public boolean isLetter(char c) {
         if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
@@ -74,12 +84,10 @@ public class Extractor {
     }
 
 
-    public void extract(int start, int end) {
-
-    }
-
     public List<String> start(Library library, String text) {
-        initPosition(text);
+        if (!lastText.equals(text)) {
+            initPosition(text);
+        }
         SubCharSequence subCharSequence = new SubCharSequence(text, 0, text.length());
         SubCharSequence subCharSequenceCheck = new SubCharSequence(text, 0, text.length());
         int wordMaxAmount = 5;
@@ -90,7 +98,7 @@ public class Extractor {
             int wordInterval7 = 7;
             int wordInterval9 = 9;
             int wordAmount = 0;
-            if (i > 0 && position[i] == 0 && position[i + 1] == 0) {
+            if (i > 0 && position[i] == 0 || position[i + 1] == 0) {
                 break;
             } else {
                 subCharSequence.update(position[i], position[i + 1]);
@@ -105,7 +113,7 @@ public class Extractor {
                             }
                             wordInterval3 += 2;
                             wordAmount++;
-                        }else {
+                        } else {
                             break;
                         }
                     }
@@ -150,31 +158,31 @@ public class Extractor {
                     }
 
 
-//                    if (i < position.length - 7) {
-//                        //两个单词
-//                        subCharSequence.update(position[i], position[i + 3]);
-//                        if (library.contains(subCharSequence)) {
-//                            phraseList.add(library.get(subCharSequence));
-//                            //三个单词
-//                            subCharSequence.update(position[i], position[i + 5]);
-//                            if (library.contains(subCharSequence)) {
-//                                phraseList.add(library.get(subCharSequence));
-//                                //四个单词
-//                                subCharSequence.update(position[i], position[i + 7]);
-//                                if (library.contains(subCharSequence)) {
-//                                    phraseList.add(library.get(subCharSequence));
-//                                }
-//                            }
-//                        }
+                    if (i < position.length - 7) {
+                        //两个单词
+                        subCharSequence.update(position[i], position[i + 3]);
+                        if (library.contains(subCharSequence)) {
+                            phraseList.add(library.get(subCharSequence));
+                            //三个单词
+                            subCharSequence.update(position[i], position[i + 5]);
+                            if (library.contains(subCharSequence)) {
+                                phraseList.add(library.get(subCharSequence));
+                                //四个单词
+                                subCharSequence.update(position[i], position[i + 7]);
+                                if (library.contains(subCharSequence)) {
+                                    phraseList.add(library.get(subCharSequence));
+                                }
+                            }
+                        }
 
 
-//                        subCharSequence.update(position[i], position[i + 7]);
-//                        subCharSequenceCheck.update(position[i], position[i + 7]);
-//                        subCharSequenceCheck.convertType(SubCharSequence.TYPE_SEPERATOR, SubCharSequence.SEPERATOR_POSITION_2);
-//                        if (library.contains(subCharSequenceCheck)) {
-//                            phraseList.add(library.get(subCharSequence));
-//                        }
-                    //    }
+                        subCharSequence.update(position[i], position[i + 7]);
+                        subCharSequenceCheck.update(position[i], position[i + 7]);
+                        subCharSequenceCheck.convertType(SubCharSequence.TYPE_SEPERATOR, SubCharSequence.SEPERATOR_POSITION_2);
+                        if (library.contains(subCharSequenceCheck)) {
+                            phraseList.add(library.get(subCharSequence));
+                        }
+                        }
                 }
             }
         }
@@ -183,6 +191,7 @@ public class Extractor {
         set.addAll(phraseList);
         List newList = new ArrayList(set.size());
         newList.addAll(set);
+        lastText = text;
         return newList;
     }
 }

@@ -105,7 +105,11 @@ public class SubCharSequence implements CharSequence {
                 }
                 break;
         }
-        differLength = secondPosition - firstPosition - 3 - 1;
+        if(secondPosition - firstPosition != 0){
+            differLength = secondPosition - firstPosition - 3 - 1;
+        }else {
+            differLength = 0;
+        }
 
     }
 

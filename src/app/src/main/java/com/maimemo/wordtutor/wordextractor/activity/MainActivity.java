@@ -51,9 +51,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 text = editText.getText().toString();
-               // text = WordUtil.getWordFromFile(MainActivity.this);
+                Bundle bundle = new Bundle();
                 Intent intent = new Intent(MainActivity.this, WordListActivity.class);
-                intent.putExtra("text",text);
+//                intent.putExtra("text",text);
+                bundle.putString("text",text);
+                intent.putExtra("text_bundle",bundle);
                 startActivity(intent);
 
             }

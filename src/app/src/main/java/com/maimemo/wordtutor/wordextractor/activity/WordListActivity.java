@@ -43,9 +43,9 @@ public class WordListActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private WordExtractorDb wordExtractorDb;
     private long start;
-    private List<Word> extractedWordList = new ArrayList<>();
     private Library library;
     private Extractor extractor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class WordListActivity extends AppCompatActivity {
         arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,words);
         listView.setAdapter(arrayAdapter);
         Intent intent = getIntent();
-        text = intent.getStringExtra("text");
+        text = intent.getBundleExtra("text_bundle").getString("text");
         progressDialog = new ProgressDialog(WordListActivity.this);
         progressDialog.setMessage("正在加载...");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -93,7 +93,7 @@ public class WordListActivity extends AppCompatActivity {
         protected Map<String, List<String>> doInBackground(Void... params) {
             wordExtractorDb = WordExtractorDb.getWordExtractorDb(WordListActivity.this);
             library = Library.getInstence();
-            extractor = new Extractor();
+            extractor = Extractor.getInstance();
             if (library.getwords().size() <= 0) {
                 library = wordExtractorDb.initLibrary();
             }
